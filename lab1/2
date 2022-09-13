@@ -1,0 +1,10 @@
+#!/bin/bash
+answer=""
+tmp=""
+read tmp
+while [ $tmp != "q" ]
+do
+answer="${answer}${tmp}"
+read tmp
+done
+echo $answer

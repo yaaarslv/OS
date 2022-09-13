@@ -1,0 +1,8 @@
+#!/bin/bash
+cat /var/log/anaconda/syslog | while read line
+do
+IFS=' ' read -ra words <<< "$line"
+if [[ ${words[1]} == "INFO" ]]
+then echo $line >> info.log
+fi
+done 
