@@ -1,0 +1,10 @@
+#!/bin/bash
+script=""
+echo "Введите название скрипта для запуска или finish для завершения работы:"
+read script
+while [[ $script != "finish" ]]
+do
+eval ./$script
+echo "Введите название скрипта для запуска или finish для завершения работы:"
+read script
+done
