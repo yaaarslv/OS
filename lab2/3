@@ -1,2 +1,2 @@
 #!/bin/bash
-ps -Ao pid,stime | sort -r -k2 | head -9 | sort -k2 | head -1 | awk '{print $1}'
+ps -Ao pid,stime | tail -2 | head -1 | awk '{print $0}'
