@@ -1,0 +1,17 @@
+#!/bin/bash
+
+BackupDate=$(ls /home/user | grep -E "^Backup-" | sort -n | tail -1 | sed 's/^Backup-//')
+Backup="/home/user/Backup-${BackupDate}"
+
+for File in $(ls $Backup | grep -Ev "\.[0-9]{4}-[0-9]{2}-[0-9]{2}$");
+do
+if [[ -f /home/user/Files/$File ]]
+then FileTime= stat -c '%y' /home/user/Files/$File | awk '{ print $1 }' 
+if [[ $BackupDate > $FileTime ]]
+then rm /home/user/Files/$File
+cp "${Backup}/${File}" "/home/user/Files/${File}"
+fi
+else
+cp "${Backup}/${File}" "/home/user/Files/${File}"
+fi
+done

@@ -1,0 +1,15 @@
+#!/bin/bash
+
+if [[ ! -d /home/user/gitFiles ]]
+then mkdir /home/user/gitFiles
+fi
+
+BackupDate=$(ls /home/user | grep -E "^Backup-" | sort -n | sed "s/Backup-//")
+echo $BackupDate
+echo "Enter date of backup:"
+read answer
+Backup="/home/user/Backup-${answer}"
+for File in $(ls $Backup | grep -Ev "\.[0-9]{4}-[0-9]{2}-[0-9]{2}$");
+do
+cp "${Backup}/${File}" "/home/user/gitFiles/${File}"
+done

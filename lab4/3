@@ -1,0 +1,42 @@
+#!/bin/bash
+
+HOM="/home/user"
+BackupDate=$(ls $HOM | grep -E "^Backup-" | sort -n | tail -1 | sed "s/Backup-//")
+Backup="$HOM/Backup-${BackupDate}"
+Today=$(date +"%Y-%m-%d")
+NowTimes=$(date -d "$Today" +"%s")
+BackupTimes=$(date -d "$BackupDate" +"%s")
+TimeDiff=$(echo "(${NowTimes} - ${BackupTimes}) / 60 / 60 / 24" | bc)
+rep=$HOM/.backup-report
+
+if [[ $TimeDiff > 7 ]]
+then mkdir "$HOM/Backup-${Today}"
+for file in $(ls $HOM/source);
+do
+cp "$HOM/source/$file" "$HOM/Backup-$Today"
+done
+flist=$(ls $HOM/source | sed "s/^/\t/")
+echo -e "${Today}. Created:\n${flist}" >> $rep
+else
+changes=""
+for file in $(ls $HOM/source);
+do
+if [[ -f "$Backup/$file" ]]
+then sourceSize=$(wc -c "$HOM/source/${file}" | awk '{print $1}')
+BackupSize=$(wc -c "${Backup}/${file}" | awk '{print $1}')
+TotalSize=$(echo "${sourceSize} - ${BackupSize}" | bc)
+if [[ $TotalSize != 0 ]]
+then mv "$Backup/$file" "$Backup/$file.$Today"
+cp "$HOM/source/$file" $Backup
+changes="${changes}\n\t$file ($file.$Today)"
+fi
+else
+cp "$HOM/source/$file" $Backup
+changes="${changes}\n\t$file"
+fi
+done
+changes=$(echo $changes | sed 's/^\\n//')
+if [[ ! -z "$changes" ]]
+then echo -e "${BackupDate}. Updated:\n${changes}" >> $rep
+fi
+fi

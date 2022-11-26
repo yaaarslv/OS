@@ -1,1 +1,14 @@
+#!/bin/bash
 
+fileName="$PWD/$1"
+if [[ $# -ne 1 ]]
+then exit 1
+fi
+if [[ ! -d /home/user/.trash ]]
+then mkdir /home/user/.trash
+touch /home/user/.trash.log
+fi
+dataFile=$(date +"%y_%m_%d-%T")
+ln "$fileName" "/home/user/.trash/$dataFile"
+echo "$fileName" "$dataFile" >> ~/.trash.log
+rm -rf "$fileName"

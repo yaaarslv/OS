@@ -1,0 +1,26 @@
+#!/bin/bash
+
+fileName="$1"
+echo $fileName
+trash="/home/user/.trash"
+trashLog="$trash.log"
+
+grep -- "$fileName " "$trashLog" | while read line
+do
+echo $line;
+currentFile=$(echo "$line" | awk '{$NF=""} 1')
+thrashFile=$(echo "$line" | awk '{ print $NF }')
+echo -n "Restore file ?(Yes/No)"
+read ans < /dev/tty
+if [[ "$ans" == "Yes" ]]
+then path=$(echo "$currentFile" | grep -Eo '.*\/')
+if [ ! -d "$path" ]
+then echo "File restored in $HOME directory"
+path="$/home/user"
+fi
+path="$path/$fileName"
+thrashFile="$trash/$thrashFile"
+ln "$thrashFile" "$path"
+rm $thrashFile
+fi
+done
