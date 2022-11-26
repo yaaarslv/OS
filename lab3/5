@@ -1,0 +1,31 @@
+#!/bin/bash
+
+operation="+"
+c=1
+re='^[0-9]+$'
+
+tail -f pipe |
+while true
+do
+read line
+if [[ "$line" == "QUIT" ]]
+then echo "exit"
+killall tail
+exit 0
+fi
+if ! [[ "$line" =~ $re ||  "$line" == "+" || "$line" == "*" ]]
+then echo "Invalid argument"
+exit 1
+fi
+if [[ "$line" == "+" || "$line" == "*" ]]
+then operation="$line"
+echo Operation is "$operation"
+else if [[ "$operation" == "+" ]]
+then c=$(echo $c "$line" | awk '{print $1 + $2}')
+echo $c
+else
+c=$(echo $c "$line" | awk '{print $1 * $2}')
+echo $c
+fi
+fi
+done

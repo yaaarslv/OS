@@ -1,0 +1,10 @@
+#!/bin/bash
+
+while true
+do
+killer="$(ps -A | awk '{ if ($4 == "5_gen" || $4 == "6_gen") print $1 }')"
+if [[ $killer != "" ]]
+then kill $killer
+fi
+done
+echo $killer

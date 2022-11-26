@@ -1,0 +1,21 @@
+#!/bin/bash
+
+mkfifo pipe
+re='^[0-9]+$'
+
+while true
+do
+read line
+echo "$line" > pipe
+if [[ $line == "QUIT" ]]
+then
+rm pipe
+exit 0
+fi
+if ! [[ $line =~ $re ||  $line == "+" || "$line" == "*" ]]
+then
+rm pipe
+echo "Invalid argument"
+exit 1
+fi
+done
